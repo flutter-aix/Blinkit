@@ -5,6 +5,16 @@ if (!isset($_SESSION['pid'])) {
     header("Location: login.php");
     exit();
 }
+if (isset($_GET['msg']) && $_GET['msg'] == 'success') {
+    echo "<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: 'Request Sent Successfully!',
+                icon: 'success'
+            });
+        });
+    </script>";
+}
 
 $pid = $_SESSION['pid'];
 
@@ -33,8 +43,6 @@ $user = $result->fetch_assoc();
 
 if (!$user) {
     $successMsg = "Your Request is not accepted yet!";
-
-    // exit();
 }
 
 $user_blood_group = $user['blood_group'];
@@ -55,37 +63,56 @@ $donors = $stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blood Donors</title>
     <link rel="stylesheet" href="../dash_resource/vendors/feather/feather.css">
-  <link rel="stylesheet" href="../dash_resource/vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" href="../dash_resource/vendors/css/vendor.bundle.base.css">
-  <!-- endinject -->
-  <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="../dash_resource/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
-  <link rel="stylesheet" href="../dash_resource/vendors/ti-icons/css/themify-icons.css">
-  <link rel="stylesheet" type="text/css" href="../dash_resource/js/select.dataTables.min.css">
-  <!-- End plugin css for this page -->
-  <!-- inject:css -->
-  <link rel="stylesheet" href="../dash_resource/css/vertical-layout-light/style.css">
-  <!-- endinject -->
-  <link rel="shortcut icon" href="../dash_resource/images/favicon.png" />
-  <link rel="stylesheet" href="../dash_resource/css/vertical-layout-light/sweetalert.css">
-  <script src="../dash_resource/js/sweetalert.js"></script>
-
+    <link rel="stylesheet" href="../dash_resource/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="../dash_resource/vendors/css/vendor.bundle.base.css">
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="../dash_resource/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="../dash_resource/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" type="text/css" href="../dash_resource/js/select.dataTables.min.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="../dash_resource/css/vertical-layout-light/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="../dash_resource/images/favicon.png" />
+    <link rel="stylesheet" href="../dash_resource/css/vertical-layout-light/sweetalert.css">
+    <script src="../dash_resource/js/sweetalert.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+        }
+        .page-body-wrapper {
+            min-height: 100%;
+            display: flex;
+        }
+        .sidebar {
+            min-height: calc(100vh - 70px);
+            position: fixed;
+            height: 100%;
+        }
+        .main-panel {
+            flex: 1;
+            width: calc(100% - 260px);
+            margin-left: 260px;
+        }
+        @media (max-width: 991px) {
+            .main-panel {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
-<?php if ($successMsg): ?>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            Swal.fire({
-  title: "Your form is not approved yet! Our team will look into it.",
-  icon: "info"
-//   imageUrl: "../assets/images/doctor-2.png",
-//   imageWidth: 400,
-//   imageHeight: 200,
-//   imageAlt: "Custom image"
-});
-        });
-    </script>
+    <?php if (isset($successMsg)): ?>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                Swal.fire({
+                    title: "Your form is not approved yet! Our team will look into it.",
+                    icon: "info"
+                });
+            });
+        </script>
     <?php endif; ?>
     <div class="container-scroller">
         <?php include 'navbar.php' ?>
@@ -122,8 +149,7 @@ $donors = $stmt->get_result();
                                                         <td><?= htmlspecialchars($row['email']) ?></td>
                                                         <td><?= htmlspecialchars($row['blood_group']) ?></td>
                                                         <td><?= htmlspecialchars($row['city']) ?></td>
-<td><a class='btn btn-success btn-rounded btn-fw' href='request_donor.php?donor_id=<?= $row['id'] ?>&req_id=<?= $req_id ?>'>Request</a></td>
-
+                                                        <td><a class='btn btn-success btn-rounded btn-fw' href='request_donor.php?donor_id=<?= $row['id'] ?>&req_id=<?= $req_id ?>'>Request</a></td>
                                                     </tr>
                                                 <?php endwhile; ?>
                                             </tbody>
@@ -153,4 +179,3 @@ $donors = $stmt->get_result();
 </body>
 
 </html>
- 
